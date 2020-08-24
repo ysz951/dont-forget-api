@@ -37,7 +37,7 @@ const NextListsService = {
             'il.item_id',
             'item.id'
           )
-          .where('dl.id', id).andWhere('type', 'Now')
+          .where('dl.id', id).andWhere('type', 'Next')
           // .where('dl.id', id).andWhere('dl.user_id', user_id).andWhere('type', 'Now')
     },
   insertNextList(db, newNextList) {
