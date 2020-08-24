@@ -2,12 +2,13 @@ const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 const helmet = require('helmet');
-const recipesRouter = require('./recipes/recipes-router');
-const commentsRouter = require('./comments/comments-router');
-const categoriesRouter = require('./categories/categories-router');
-const searchRouter = require('./search/search-router');
 const authRouter = require('./auth/auth-router');
 const usersRouter = require('./users/users-router');
+const buyListsRouter = require('./buyLists/buyLists-router');
+const nextListsRouter = require('./nextLists/nextLists-router');
+const shoppingListsRouter = require('./shoppingLists/shoppingLists-router');
+const itemToListRouter = require('./itemToList/itemToList-router');
+const itemsRouter= require('./items/items-router');
 const { NODE_ENV } = require('./config');
 
 const app = express();
@@ -23,10 +24,11 @@ app.use(cors());
 app.get('/', (req, res) => {
     res.send('Hello, world!')
 });
-app.use('/api/recipes', recipesRouter);
-app.use('/api/comments', commentsRouter);
-app.use('/api/categories', categoriesRouter);
-app.use('/api/search', searchRouter);
+app.use('/api/buylists', buyListsRouter);
+app.use('/api/nextlists', nextListsRouter);
+app.use('/api/shopping', shoppingListsRouter);
+app.use('/api/relation', itemToListRouter);
+app.use('/api/items', itemsRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/users', usersRouter);
 

@@ -4,36 +4,8 @@ const xss = require('xss');
 const REGEX_UPPER_LOWER_NUMBER_SPECIAL = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&])[\S]+/;
 
 const UsersService = {
-  getRecipeForUser(db, collector_id, rec_id) {
-    return db
-      .from('enjoycook_recipes_collectors')
-      .select('rec_id')
-      .where('collector_id', collector_id).andWhere('rec_id', rec_id)
-  },
-  deleteRecipeForuser(db, collector_id, rec_id) {
-    return db('enjoycook_recipes_collectors')
-      .where('collector_id', collector_id).andWhere('rec_id', rec_id)
-      .delete()
-  },
-  getRecipesForCollector(db, collector_id) {
-    return db
-      .from('enjoycook_recipes_collectors')
-      .select('rec_id')
-      .where('collector_id', collector_id)
-  },
-
-  insertRecipeForCollector(db, newRecipe) {
-    return db
-      .insert(newRecipe)
-      .into('enjoycook_recipes_collectors')
-      .returning('*')
-      .then(rows => {
-        return rows[0]
-      })
-  },
-
   hasUserWithUserName(db, user_name) {
-    return db('enjoycook_users')
+    return db('dontforget_users')
       .where({ user_name })
       .first()
       .then(user => !!user)
@@ -41,7 +13,7 @@ const UsersService = {
   insertUser(db, newUser) {
     return db
       .insert(newUser)
-      .into('enjoycook_users')
+      .into('dontforget_users')
       .returning('*')
       .then(([user]) => user)
   },
