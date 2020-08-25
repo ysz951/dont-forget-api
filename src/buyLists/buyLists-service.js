@@ -61,7 +61,28 @@ const BuyListsService = {
         list_name: xss(listItem.list_name),
         item_name: xss(listItem.item_name),
     };
-},
+  },
+  async checkListExists(req, res, next) {
+    try {
+      const list = await BuyListsService.getBuyListById(
+          req.app.get('db'),
+          req.params.list_id
+      );
+      if (!list)
+        return res.status(404).json({
+          error: `list doesn't exist`
+        });
+      if (list.user_id !== req.user.id) {
+        return res.status(404).json({
+          error: `No permit`
+        });
+      }
+      res.list = list
+      next();
+    } catch (error) {
+      next(error);
+    }
+  }
 };
 
 module.exports = BuyListsService;

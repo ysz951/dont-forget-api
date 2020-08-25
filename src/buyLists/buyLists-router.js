@@ -41,7 +41,7 @@ buylistsRouter
 
 buylistsRouter.route('/:list_id/')
   .all(requireAuth)
-  .all(checkListExists)
+  .all(BuyListsService.checkListExists)
   .get((req, res, next) => {
     BuyListsService.getListItems(
       req.app.get('db'),
