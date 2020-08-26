@@ -4,47 +4,47 @@ const NextListsService = {
   getAllNextLists(db, user_id) {
       return db
           .from('dontforget_lists')
-          .select(
-              '*'
-          )
+          .select('*')
           .where({user_id}).andWhere('type', 'Next')
   },
   getNextListById(db, id) {
     return db
           .from('dontforget_lists')
-          .select(
-              '*'
-          )
-          .where({id})
+          .select('*' )
+          .where({id}).andWhere('type', 'Next')
           .first()
   },
   getListItems(db, id) {
-      return db
-          .from('dontforget_lists AS dl')
-          .select(
-            'item.id',
-            'item.item_name AS item_name'
-          )
-          .join(
-            'dontforget_item_list AS il',
-            'dl.id',
-            'il.list_id'
-          )
-          .join(
-            'dontforget_items AS item',
-            'il.item_id',
-            'item.id'
-          )
-          .where('dl.id', id).andWhere('type', 'Next')
-          // .where('dl.id', id).andWhere('dl.user_id', user_id).andWhere('type', 'Now')
-    },
+    return db
+      .from('dontforget_lists AS dl')
+      .select(
+        'item.id',
+        'item.item_name AS item_name'
+      )
+      .join(
+        'dontforget_items AS item',
+        'dl.id',
+        'item.list_id'
+      )
+      .where('dl.id', id).andWhere('type', 'Next')
+      .orderBy('id', 'asc')
+  },
   insertNextList(db, newNextList) {
-    // console.log(newNextList)
     return db
       .insert(newNextList)
       .into('dontforget_lists')
       .returning('*')
       .then(([nextList]) => nextList)
+  },
+  deleteNextList(db, id) {
+    return db('dontforget_lists')
+      .where({id})
+      .delete()
+  },
+  updateNextList(db, id, updateNextList) {
+    return db('dontforget_lists')
+      .where({ id })
+      .update(updateNextList)
   },
   serializeNextLists(nextList) {
       return {

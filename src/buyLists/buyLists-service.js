@@ -4,40 +4,31 @@ const BuyListsService = {
   getAllBuyLists(db, user_id) {
       return db
           .from('dontforget_lists')
-          .select(
-              '*'
-          )
+          .select('*')
           .where({user_id}).andWhere('type', 'Now')
   },
   getBuyListById(db, id) {
     return db
           .from('dontforget_lists')
-          .select(
-              '*'
-          )
-          .where({id})
+          .select('*')
+          .where({id}).andWhere('type', 'Now')
           .first()
   },
   getListItems(db, id) {
-      return db
-          .from('dontforget_lists AS dl')
-          .select(
-            'item.id',
-            'item.item_name AS item_name'
-          )
-          .join(
-            'dontforget_item_list AS il',
-            'dl.id',
-            'il.list_id'
-          )
-          .join(
-            'dontforget_items AS item',
-            'il.item_id',
-            'item.id'
-          )
-          .where('dl.id', id).andWhere('type', 'Now')
-          // .where('dl.id', id).andWhere('dl.user_id', user_id).andWhere('type', 'Now')
-    },
+    return db
+        .from('dontforget_lists AS dl')
+        .select(
+          'item.id',
+          'item.item_name AS item_name'
+        )
+        .join(
+          'dontforget_items AS item',
+          'dl.id',
+          'item.list_id'
+        )
+        .where('dl.id', id).andWhere('type', 'Now')
+        .orderBy('id', 'asc')
+  },
   insertBuyList(db, newBuyList) {
     // console.log(newBuyList)
     return db

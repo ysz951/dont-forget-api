@@ -3,16 +3,12 @@ const bcrypt = require('bcryptjs');
 const app = require('../src/app');
 const helpers = require('./test-helpers');
 
-describe.only('Users Endpoints', function() {
+describe('Users Endpoints', function() {
   let db;
   const { 
-    testUsers,
-    testRecipes,
-    testCategories,
-  } = helpers.makeRecipesFixtures();
+    testUsers
+  } = helpers.makeListsFixtures();
   const testUser = testUsers[0];
-  const testRecipe = testRecipes[0];
-  const newRecipe = {rec_id: testRecipe.id, collector_id: testUser.id};
   before('make knex instance', () => {
     db = knex({
       client: 'pg',
@@ -50,7 +46,7 @@ describe.only('Users Endpoints', function() {
           })
           .expect(res =>
             db
-              .from('enjoycook_users')
+              .from('dontforget_users')
               .select('*')
               .where({ id: res.body.id })
               .first()

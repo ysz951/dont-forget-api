@@ -9,15 +9,14 @@ const jsonBodyParser = express.json();
 itemsRouter
   .route('/')
   .post(requireAuth, jsonBodyParser, (req, res, next) => {
-    const { item_name } = req.body;
-    const newItem = { item_name };
-
+    const { item_name, list_id } = req.body;
+    const newItem = { item_name, list_id };
     for (const [key, value] of Object.entries(newItem))
       if (value == null)
         return res.status(400).json({
           error: `Missing '${key}' in request body`
         });
-    // newItem.user_id = req.user.id;
+    newItem.user_id = req.user.id;
     
     ItemsService.insertItem(
       req.app.get('db'),
@@ -48,14 +47,15 @@ itemsRouter
       .catch(next)
   })
   .patch(requireAuth, jsonBodyParser, (req, res, next) => {
-    const { item_name } = req.body;
-    const ItemToUpdate = { item_name  };
+    const { item_name, list_id } = req.body;
+    const ItemToUpdate = { item_name, list_id };
 
     for (const [key, value] of Object.entries(ItemToUpdate))
       if (value == null)
         return res.status(400).json({
           error: `Missing '${key}' in request body`
         });
+    ItemToUpdate.user_id = req.user.id;
     ItemsService.updateItem(
       req.app.get('db'),
       req.params.item_id,

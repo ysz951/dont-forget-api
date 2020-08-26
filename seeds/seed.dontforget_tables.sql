@@ -3,8 +3,7 @@ BEGIN;
 TRUNCATE
   dontforget_users,
   dontforget_lists,
-  dontforget_items,
-  dontforget_item_list
+  dontforget_items
   RESTART IDENTITY CASCADE;
 
 INSERT INTO dontforget_users (user_name, password)
@@ -17,29 +16,23 @@ INSERT INTO dontforget_lists (list_name, type, user_id)
 VALUES
   ('List 1', 'Now',1),
   ('List 2', 'Now',2),
-  ('List 3', 'Next',3),
-  ('List 4', 'Now',3),
-  ('List 5', 'Next',3),
-  ('List 6', 'Now',3);
+  ('List 3', 'Now',1),
+  ('List 4', 'Now',2),
+  ('List 5', 'Now',3),
+  ('List 6', 'Now',3),
+  ('List 7', 'Next',3);
 
-INSERT INTO dontforget_items (item_name)
+INSERT INTO dontforget_items (item_name, list_id, user_id)
 VALUES
-  ('Item 1'),
-  ('Item 2'),
-  ('Item 3');
-
-INSERT INTO dontforget_item_list (item_id, list_id)
-VALUES
-  (1, 1),
-  (2, 1),
-  (1, 2),
-  (2, 6),
-  (1, 5),
-  (3, 6),
-  (1, 6),
-  (2, 5),
-  (3, 5),
-  (3, 1);
+  ('Item 1', 1, 1),
+  ('Item 2', 2, 1),
+  ('Item 3', 3, 2),
+  ('Item 4', 4, 2),
+  ('Item 5', 5, 3),
+  ('Item 6', 6, 3),
+  ('Item 7', 5, 3),
+  ('Item 8', 6, 3),
+  ('Item 9', 7, 3);
 
 COMMIT;
 

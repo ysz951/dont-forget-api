@@ -7,7 +7,6 @@ const usersRouter = require('./users/users-router');
 const buyListsRouter = require('./buyLists/buyLists-router');
 const nextListsRouter = require('./nextLists/nextLists-router');
 const shoppingListsRouter = require('./shoppingLists/shoppingLists-router');
-const itemToListRouter = require('./itemToList/itemToList-router');
 const itemsRouter= require('./items/items-router');
 const { NODE_ENV } = require('./config');
 
@@ -27,7 +26,6 @@ app.get('/', (req, res) => {
 app.use('/api/buylists', buyListsRouter);
 app.use('/api/nextlists', nextListsRouter);
 app.use('/api/shopping', shoppingListsRouter);
-app.use('/api/relation', itemToListRouter);
 app.use('/api/items', itemsRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/users', usersRouter);

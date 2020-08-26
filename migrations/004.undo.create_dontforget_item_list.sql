@@ -1,1 +1,0 @@
-DROP TABLE IF EXISTS dontforget_item_list;

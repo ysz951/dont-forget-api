@@ -65,211 +65,105 @@ function makeListsArray(users) {
   ];
 }
 
-function makeItemsArray() {
+function makeItemsArray(users, lists) {
   return [
     {
       id: 1,
       item_name: 'First test item!',
+      list_id: lists[0].id,
+      user_id: users[0].id,
       date_created: new Date('2029-01-22T16:28:32.615Z'),
     },
     {
       id: 2,
       item_name: 'Second test item!',
+      list_id: lists[1].id,
+      user_id: users[0].id,
       date_created: new Date('2029-01-22T16:28:32.615Z'),
     },
     {
       id: 3,
+      list_id: lists[2].id,
+      user_id: users[1].id,
       item_name: 'Third test item!',
       date_created: new Date('2029-01-22T16:28:32.615Z'),
     },
     {
       id: 4,
+      list_id: lists[3].id,
+      user_id: users[1].id,
       item_name: 'Fourth test item!',
       date_created: new Date('2029-01-22T16:28:32.615Z'),
     },
     {
       id: 5,
+      list_id: lists[4].id,
+      user_id: users[2].id,
       item_name: 'Fifth test item!',
       date_created: new Date('2029-01-22T16:28:32.615Z'),
     },
-    {
-      id: 6,
-      item_name: 'Sixth test item!',
-      date_created: new Date('2029-01-22T16:28:32.615Z'),
-    },
   ];
 }
 
-function makeitemToListArray() {
-  return [
-    {
-      item_id: 1,
-      list_id: 2,
-    },
-    {
-      item_id: 3,
-      list_id: 4,
-    },
-    {
-      item_id: 2,
-      list_id: 3,
-    },
-    {
-      item_id: 5,
-      list_id: 5,
-    },
-    {
-      item_id: 4,
-      list_id: 1,
-    },
-    {
-      item_id: 6,
-      list_id: 6,
-    },
-  ];
-}
 
-function makeExpectedCollection(recipes, recipeId) {
-  const expectedCollections = recipes.filter(recipe => recipe.id === recipeId);
-  return expectedCollections.map(recipe => {
-    return {
-      rec_id: recipe.id
-    };
-  });
-}
-
-function makeExpectedRecipe(users, recipe, categories, comments=[]) {
-  const author = users
-    .find(user => user.id === recipe.author_id);
-
-  const number_of_comments = comments
-    .filter(comment => comment.recipe_id === recipe.id)
-    .length;
-  const category = categories
-    .find(category => category.id === recipe.category_id);
+function serializeBuyLists(buyList) {
   return {
-    id: recipe.id,
-    name: recipe.name,
-    content: recipe.content,
-    date_created: recipe.date_created.toISOString(),
-    img_src: recipe.img_src,
-    number_of_comments,
-    category: category ? category.name : null,
-    author: {
-      id: author.id,
-      user_name: author.user_name,
-      date_created: author.date_created.toISOString(),
-      date_modified: author.date_modified || null,
-    },
+      id: buyList.id,
+      list_name: buyList.list_name,
   };
 }
 
-function makeExpectedLists(user, lists) {
+function serializeBuyListItems(listItem) {
+  return {
+      id: listItem.id,
+      item_name: listItem.item_name,
+  };
+}
+
+function makeExpectedBuyLists(user, lists) {
   const expectedLists = lists
-    .filter(list => list.user_id === user.id);
-
-  return 
+    .filter(list => list.user_id === user.id && list.type === "Now");
+  return expectedLists.map(serializeBuyLists);
 }
 
-function makeExpectedSearchRecipes(users, recipes, categories, query, comments=[]) {
-  const expectedRecipes = recipes
-    .filter(recipe => recipe.name.includes(query));
+function makeExpectedNextLists(user, lists) {
+  const expectedLists = lists
+    .filter(list => list.user_id === user.id && list.type === "Next");
+  return expectedLists.map(serializeBuyLists);
+}
 
-  return expectedRecipes.map(recipe => {
-    const author = users.find(user => user.id === recipe.author_id)
-    const category = categories.find(category => category.id === recipe.category_id)
-    const number_of_comments = comments
-      .filter(comment => comment.recipe_id === recipe.id)
-      .length
-    return {
-      id: recipe.id,
-      name: recipe.name,
-      content: recipe.content,
-      date_created: recipe.date_created.toISOString(),
-      img_src: recipe.img_src,
-      number_of_comments,
-      category: category ? category.name : null,
-      author: {
-          id: author.id,
-          user_name: author.user_name,
-          date_created: author.date_created.toISOString(),
-          date_modified: author.date_modified || null,
-      }
-    };
-  });
+function makeExpectedListItems(user, list, items) {
+  const expectedItems = items
+    .filter(item => item.user_id === user.id && item.list_id === list.id);
+  const serizeExpectedItem = expectedItems.map(serializeBuyListItems);
+  return {'listItems': serizeExpectedItem, 'listName': list.list_name};
 }
 
 
-function makeExpectedCategory(category) {
-  return {
-    id: category.id,
-    name: category.name,
-  };
-}
 
-function makeExpectedComment(users, comment) {
-  const commentUser = users.find(user => user.id === comment.user_id);
-  return {
-    id: comment.id,
-    content: comment.content,
-    date_created: comment.date_created.toISOString(),
-    recipe_id: comment.recipe_id,
-    user: {
-      id: commentUser.id,
-      user_name: commentUser.user_name,
-      date_created: commentUser.date_created.toISOString(),
-      date_modified: commentUser.date_modified || null,
-    }
-  };
-}
-
-function makeExpectedRecipeComments(users, recipeId, comments) {
-  const expectedComments = comments
-    .filter(comment => comment.recipe_id === recipeId);
-
-  return expectedComments.map(comment => {
-    const commentUser = users.find(user => user.id === comment.user_id)
-    return {
-      id: comment.id,
-      content: comment.content,
-      date_created: comment.date_created.toISOString(),
-      user: {
-        id: commentUser.id,
-        user_name: commentUser.user_name,
-        date_created: commentUser.date_created.toISOString(),
-        date_modified: commentUser.date_modified || null,
-      }
-    };
-  });
-}
-
-function makeMaliciousRecipe(user, category) {
-  const maliciousRecipe = {
+function makeMaliciousList(user) {
+  const maliciousList = {
     id: 911,
     date_created: new Date(),
-    category_id: category.id,
-    name: 'Naughty naughty very naughty <script>alert("xss");</script>',
-    img_src: null,
-    author_id: user.id,
-    content: `Bad image <img src="https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);">. But not <strong>all</strong> bad.`,
+    list_name: 'Naughty naughty very naughty <script>alert("xss");</script>',
+    type: 'Now',
+    user_id: user.id
   };
-  const expectedRecipe = {
-    ...makeExpectedRecipe([user], maliciousRecipe, [category]),
-    name: 'Naughty naughty very naughty &lt;script&gt;alert(\"xss\");&lt;/script&gt;',
-    content: `Bad image <img src="https://url.to.file.which/does-not.exist">. But not <strong>all</strong> bad.`,
+  const expectedList = {
+    ...maliciousList,
+    list_name: 'Naughty naughty very naughty &lt;script&gt;alert(\"xss\");&lt;/script&gt;',
   };
   return {
-    maliciousRecipe,
-    expectedRecipe,
+    maliciousList,
+    expectedList,
   };
 }
 
-function makeRecipesFixtures() {
+function makeListsFixtures() {
   const testUsers = makeUsersArray();
-  const testCategories = makeCategoriesArray();
-  const testRecipes = makeRecipesArray(testUsers, testCategories);
-  const testComments = makeCommentsArray(testUsers, testRecipes);
-  return { testUsers, testRecipes, testCategories, testComments };
+  const testLists = makeListsArray(testUsers);
+  const testItems = makeItemsArray(testUsers, testLists);
+  return { testUsers, testLists, testItems };
 }
 
 function cleanTables(db) {
@@ -278,8 +172,7 @@ function cleanTables(db) {
       `TRUNCATE
         dontforget_users,
         dontforget_items,
-        dontforget_lists,
-        dontforget_item_list
+        dontforget_lists
       `
     )
     .then(() =>
@@ -310,32 +203,27 @@ function seedUsers(db, users) {
     )
 }
 
-function seedItems(db, items) {
-    return db.into('dontforget_items').insert(items)
-     .then(() => 
-        db.raw(
-            `SELECT setval('dontforget_items_id_seq', ?)`,
-            [items[items.length - 1].id],
-        )
-     )
-}
+
 
 function seedLists(db, users, lists) {
   return db.transaction(async trx => {
     await seedUsers(trx, users)
     await trx.into('dontforget_lists').insert(lists)
     await trx.raw(
-      `SELECT setval('dontforget_recipes_id_seq', ?)`,
+      `SELECT setval('dontforget_lists_id_seq', ?)`,
       [lists[lists.length - 1].id],
     )
   })
 }
 
-function seedItemToList(db, users, items, lists, newRelation) {
+function seedItems(db, users, lists, items) {
   return db.transaction(async trx => {
     await seedLists(db, users, lists)
-    await seedItems(db, items)
-    await trx.into('dontforget_item_list').insert(newRelation)
+    await trx.into('dontforget_items').insert(items)
+    await trx.raw(
+      `SELECT setval('dontforget_items_id_seq', ?)`,
+      [items[items.length - 1].id],
+    )
   })
 }
 
@@ -357,17 +245,17 @@ function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
 
 module.exports = {
   makeUsersArray,
-  makeExpectedRecipe,
-  makeExpectedRecipeComments,
-  makeExpectedCategoryRecipes,
-  makeExpectedCategory,
-  makeMaliciousRecipe,
   makeListsArray,
-  makeRecipesFixtures,
   cleanTables,
   makeAuthHeader,
   seedUsers,
-  makeExpectedCollection,
-  makeExpectedSearchRecipes,
-  makeExpectedComment,
+  makeExpectedBuyLists,
+  makeExpectedNextLists,
+  makeExpectedListItems,
+  makeListsFixtures,
+  seedUsers,
+  seedLists,
+  seedItems,
+  seedMaliciousList,
+  makeMaliciousList
 };

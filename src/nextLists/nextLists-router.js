@@ -56,6 +56,38 @@ nextlistsRouter.route('/:list_id/')
       .catch(next)
     
   })
+  .delete(jsonBodyParser, (req, res, next) => {
+    console.log('ok')
+    NextListsService.deleteNextList(
+      req.app.get('db'),
+      req.params.list_id
+    )
+      .then(numRowsAffected => {
+        res.status(204).end()
+      })
+      .catch(next)
+  })
+  .patch(jsonBodyParser, (req, res, next) => {
+    const { list_name } = req.body;
+    const ListToUpdate = { list_name };
+
+    for (const [key, value] of Object.entries(ListToUpdate))
+      if (value == null)
+        return res.status(400).json({
+          error: `Missing '${key}' in request body`
+        });
+    ListToUpdate.user_id = req.user.id;
+    ListToUpdate.type = "Next";
+    NextListsService.updateNextList(
+      req.app.get('db'),
+      req.params.list_id,
+      ListToUpdate
+    )
+      .then(numRowsAffected => {
+        res.status(204).end()
+      })
+      .catch(next)
+  })
 /* async/await syntax for promises */
 async function checkListExists(req, res, next) {
   try {
