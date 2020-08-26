@@ -24,81 +24,107 @@ function makeUsersArray() {
   ];
 }
 
-function makeCategoriesArray() {
+function makeListsArray(users) {
   return [
     {
       id: 1,
-      name: 'test-category-1',
+      list_name: 'test-list-1',
+      type: 'Now',
+      user_id: users[0].id,
+      date_created: new Date('2029-01-22T16:28:32.615Z'),
 
     },
     {
       id: 2,
-      name: 'test-category-2',
-    },
-  ];
-}
-
-function makeRecipesArray(users, categories) {
-  return [
-    {
-      id: 1,
-      name: 'First test recipe!',
-      author_id: users[0].id,
-      category_id: categories[0].id,
-      img_src:'First imge src',
-      date_created: new Date('2029-01-22T16:28:32.615Z'),
-      content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Natus consequuntur deserunt commodi, nobis qui inventore corrupti iusto aliquid debitis unde non.Adipisci, pariatur.Molestiae, libero esse hic adipisci autem neque ?',
-    },
-    {
-      id: 2,
-      name: 'Second test recipe!',
-      author_id: users[1].id,
-      category_id: categories[1].id,
-      img_src:'Second imge src',
-      date_created: new Date('2029-01-22T16:28:32.615Z'),
-      content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Natus consequuntur deserunt commodi, nobis qui inventore corrupti iusto aliquid debitis unde non.Adipisci, pariatur.Molestiae, libero esse hic adipisci autem neque ?',
-    },
-    {
-      id: 3,
-      name: 'Third test recipe!',
-      author_id: users[2].id,
-      category_id: null,
-      img_src:null,
-      date_created: new Date('2029-01-22T16:28:32.615Z'),
-      content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Natus consequuntur deserunt commodi, nobis qui inventore corrupti iusto aliquid debitis unde non.Adipisci, pariatur.Molestiae, libero esse hic adipisci autem neque ?',
-    },
-  ];
-}
-
-function makeCommentsArray(users, recipes) {
-  return [
-    {
-      id: 1,
-      content: 'First test comment!',
-      recipe_id: recipes[0].id,
+      list_name: 'test-list-2',
+      type: 'Next',
       user_id: users[0].id,
       date_created: new Date('2029-01-22T16:28:32.615Z'),
     },
     {
-      id: 2,
-      content: 'Second test comment!',
-      recipe_id: recipes[0].id,
+      id: 3,
+      list_name: 'test-list-3',
+      type: 'Now',
       user_id: users[1].id,
-      date_created: new Date('2029-01-22T16:28:32.615Z'),
-    },
-    {
-      id: 3,
-      content: 'Fifth test comment!',
-      recipe_id: recipes[recipes.length - 1].id,
-      user_id: users[0].id,
       date_created: new Date('2029-01-22T16:28:32.615Z'),
     },
     {
       id: 4,
-      content: 'Sixth test comment!',
-      recipe_id: recipes[recipes.length - 1].id,
+      list_name: 'test-list-4',
+      type: 'Next',
       user_id: users[1].id,
       date_created: new Date('2029-01-22T16:28:32.615Z'),
+    },
+    {
+      id: 5,
+      list_name: 'test-list-5',
+      type: 'Now',
+      user_id: users[2].id,
+      date_created: new Date('2029-01-22T16:28:32.615Z'),
+    },
+  ];
+}
+
+function makeItemsArray() {
+  return [
+    {
+      id: 1,
+      item_name: 'First test item!',
+      date_created: new Date('2029-01-22T16:28:32.615Z'),
+    },
+    {
+      id: 2,
+      item_name: 'Second test item!',
+      date_created: new Date('2029-01-22T16:28:32.615Z'),
+    },
+    {
+      id: 3,
+      item_name: 'Third test item!',
+      date_created: new Date('2029-01-22T16:28:32.615Z'),
+    },
+    {
+      id: 4,
+      item_name: 'Fourth test item!',
+      date_created: new Date('2029-01-22T16:28:32.615Z'),
+    },
+    {
+      id: 5,
+      item_name: 'Fifth test item!',
+      date_created: new Date('2029-01-22T16:28:32.615Z'),
+    },
+    {
+      id: 6,
+      item_name: 'Sixth test item!',
+      date_created: new Date('2029-01-22T16:28:32.615Z'),
+    },
+  ];
+}
+
+function makeitemToListArray() {
+  return [
+    {
+      item_id: 1,
+      list_id: 2,
+    },
+    {
+      item_id: 3,
+      list_id: 4,
+    },
+    {
+      item_id: 2,
+      list_id: 3,
+    },
+    {
+      item_id: 5,
+      list_id: 5,
+    },
+    {
+      item_id: 4,
+      list_id: 1,
+    },
+    {
+      item_id: 6,
+      list_id: 6,
     },
   ];
 }
@@ -138,32 +164,11 @@ function makeExpectedRecipe(users, recipe, categories, comments=[]) {
   };
 }
 
-function makeExpectedCategoryRecipes(users, recipes, categories, categoryId, comments=[]) {
-  const expectedRecipes = recipes
-    .filter(recipe => recipe.category_id === categoryId);
+function makeExpectedLists(user, lists) {
+  const expectedLists = lists
+    .filter(list => list.user_id === user.id);
 
-  return expectedRecipes.map(recipe => {
-    const author = users.find(user => user.id === recipe.author_id)
-    const category = categories.find(category => category.id === recipe.category_id)
-    const number_of_comments = comments
-      .filter(comment => comment.recipe_id === recipe.id)
-      .length
-    return {
-      id: recipe.id,
-      name: recipe.name,
-      content: recipe.content,
-      date_created: recipe.date_created.toISOString(),
-      img_src: recipe.img_src,
-      number_of_comments,
-      category: category ? category.name : null,
-      author: {
-          id: author.id,
-          user_name: author.user_name,
-          date_created: author.date_created.toISOString(),
-          date_modified: author.date_modified || null,
-      }
-    };
-  });
+  return 
 }
 
 function makeExpectedSearchRecipes(users, recipes, categories, query, comments=[]) {
@@ -271,23 +276,20 @@ function cleanTables(db) {
   return db.transaction(trx =>
     trx.raw(
       `TRUNCATE
-        enjoycook_users,
-        enjoycook_recipes,
-        enjoycook_categories,
-        enjoycook_comments,
-        enjoycook_recipes_collectors
+        dontforget_users,
+        dontforget_items,
+        dontforget_lists,
+        dontforget_item_list
       `
     )
     .then(() =>
       Promise.all([
-        trx.raw(`ALTER SEQUENCE enjoycook_recipes_id_seq minvalue 0 START WITH 1`),
-        trx.raw(`ALTER SEQUENCE enjoycook_users_id_seq minvalue 0 START WITH 1`),
-        trx.raw(`ALTER SEQUENCE enjoycook_comments_id_seq minvalue 0 START WITH 1`),
-        trx.raw(`ALTER SEQUENCE enjoycook_categories_id_seq minvalue 0 START WITH 1`),
-        trx.raw(`SELECT setval('enjoycook_recipes_id_seq', 0)`),
-        trx.raw(`SELECT setval('enjoycook_users_id_seq', 0)`),
-        trx.raw(`SELECT setval('enjoycook_comments_id_seq', 0)`),
-        trx.raw(`SELECT setval('enjoycook_categories_id_seq', 0)`),
+        trx.raw(`ALTER SEQUENCE dontforget_users_id_seq minvalue 0 START WITH 1`),
+        trx.raw(`ALTER SEQUENCE dontforget_items_id_seq minvalue 0 START WITH 1`),
+        trx.raw(`ALTER SEQUENCE dontforget_lists_id_seq minvalue 0 START WITH 1`),
+        trx.raw(`SELECT setval('dontforget_users_id_seq', 0)`),
+        trx.raw(`SELECT setval('dontforget_items_id_seq', 0)`),
+        trx.raw(`SELECT setval('dontforget_lists_id_seq', 0)`),
       ])
     )
   );
@@ -298,62 +300,50 @@ function seedUsers(db, users) {
     ...user,
     password: bcrypt.hashSync(user.password, 1)
   }));
-  return db.into('enjoycook_users').insert(preppedUsers)
+  return db.into('dontforget_users').insert(preppedUsers)
     .then(() =>
       // update the auto sequence to stay in sync
       db.raw(
-        `SELECT setval('enjoycook_users_id_seq', ?)`,
+        `SELECT setval('dontforget_users_id_seq', ?)`,
         [users[users.length - 1].id],
       )
     )
 }
 
-function seedCategories(db, categories) {
-    return db.into('enjoycook_categories').insert(categories)
+function seedItems(db, items) {
+    return db.into('dontforget_items').insert(items)
      .then(() => 
         db.raw(
-            `SELECT setval('enjoycook_categories_id_seq', ?)`,
-            [categories[categories.length - 1].id],
+            `SELECT setval('dontforget_items_id_seq', ?)`,
+            [items[items.length - 1].id],
         )
      )
 }
 
-function seedRecipesTables(db, users, recipes, categories, comments=[]) {
-  // use a transaction to group the queries and auto rollback on any failure
+function seedLists(db, users, lists) {
   return db.transaction(async trx => {
     await seedUsers(trx, users)
-    await seedCategories(trx, categories)
-    await trx.into('enjoycook_recipes').insert(recipes)
-    // update the auto sequence to match the forced id values
+    await trx.into('dontforget_lists').insert(lists)
     await trx.raw(
-      `SELECT setval('enjoycook_recipes_id_seq', ?)`,
-      [recipes[recipes.length - 1].id],
+      `SELECT setval('dontforget_recipes_id_seq', ?)`,
+      [lists[lists.length - 1].id],
     )
-    
-    // only insert comments if there are some, also update the sequence counter
-    if (comments.length) {
-      await trx.into('enjoycook_comments').insert(comments)
-      await trx.raw(
-        `SELECT setval('enjoycook_comments_id_seq', ?)`,
-        [comments[comments.length - 1].id],
-      )
-    }
   })
 }
 
-function seedCollectionsTables(db, users, recipes, categories, newRecipe, comments = []) {
+function seedItemToList(db, users, items, lists, newRelation) {
   return db.transaction(async trx => {
-    await seedRecipesTables(db, users, recipes, categories, comments)
-    await trx.into('enjoycook_recipes_collectors').insert(newRecipe)
+    await seedLists(db, users, lists)
+    await seedItems(db, items)
+    await trx.into('dontforget_item_list').insert(newRelation)
   })
 }
 
 
-function seedMaliciousRecipe(db, user, recipe, category) {
+function seedMaliciousList(db, user, list) {
   return db.transaction(async trx => {
       await seedUsers(trx, [user])
-      await seedCategories(trx, [category])
-      await trx.into('enjoycook_recipes').insert([recipe])
+      await trx.into('dontforget_lists').insert([list])
   })
 }
 
@@ -367,22 +357,16 @@ function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
 
 module.exports = {
   makeUsersArray,
-  makeRecipesArray,
   makeExpectedRecipe,
   makeExpectedRecipeComments,
   makeExpectedCategoryRecipes,
   makeExpectedCategory,
   makeMaliciousRecipe,
-  makeCommentsArray,
-  makeCategoriesArray,
+  makeListsArray,
   makeRecipesFixtures,
   cleanTables,
-  seedRecipesTables,
-  seedMaliciousRecipe,
   makeAuthHeader,
   seedUsers,
-  seedCategories,
-  seedCollectionsTables,
   makeExpectedCollection,
   makeExpectedSearchRecipes,
   makeExpectedComment,
