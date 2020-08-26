@@ -23,9 +23,7 @@ const NextListsService = {
           .from('dontforget_lists AS dl')
           .select(
             'item.id',
-            'dl.list_name AS list_name',
-            'item.item_name AS item_name',
-            'user_id'
+            'item.item_name AS item_name'
           )
           .join(
             'dontforget_item_list AS il',
@@ -58,7 +56,6 @@ const NextListsService = {
     
     return {
         id: listItem.id,
-        list_name: xss(listItem.list_name),
         item_name: xss(listItem.item_name),
     };
 },

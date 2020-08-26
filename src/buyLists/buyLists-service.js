@@ -23,9 +23,7 @@ const BuyListsService = {
           .from('dontforget_lists AS dl')
           .select(
             'item.id',
-            'dl.list_name AS list_name',
-            'item.item_name AS item_name',
-            'user_id'
+            'item.item_name AS item_name'
           )
           .join(
             'dontforget_item_list AS il',
@@ -48,6 +46,17 @@ const BuyListsService = {
       .returning('*')
       .then(([buyList]) => buyList)
   },
+  deleteBuyList(db, id) {
+    return db('dontforget_lists')
+      .where({id})
+      .delete()
+  },
+  updateBuyList(db, id, updateBuyList) {
+    return db('dontforget_lists')
+      .where({ id })
+      .update(updateBuyList)
+  },
+
   serializeBuyLists(buyList) {
       return {
           id: buyList.id,
@@ -58,7 +67,6 @@ const BuyListsService = {
     
     return {
         id: listItem.id,
-        list_name: xss(listItem.list_name),
         item_name: xss(listItem.item_name),
     };
   },
