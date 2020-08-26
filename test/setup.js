@@ -6,7 +6,7 @@ process.env.JWT_EXPIRY = '3m';
 require('dotenv').config();
 
 process.env.TEST_DATABASE_URL = process.env.TEST_DATABASE_URL
-  || "postgresql://enjoycook_server@localhost/enjoycook-test";
+  || "postgresql://dontforget_server@localhost/dontforget-test";
 
 const { expect } = require('chai');
 const supertest = require('supertest');

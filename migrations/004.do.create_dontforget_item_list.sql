@@ -1,6 +1,6 @@
 CREATE TABLE dontforget_item_list (
     item_id INTEGER
-        REFERENCES dontforget_items(id) ON DELETE SET NULL,
+        REFERENCES dontforget_items(id) ON DELETE CASCADE NOT NULL,
     list_id INTEGER
         REFERENCES dontforget_lists(id) ON DELETE CASCADE NOT NULL
 );
