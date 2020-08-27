@@ -32,11 +32,12 @@ itemsRouter
     })
 itemsRouter
   .route('/:item_id')
+  .all(requireAuth)
   .all(checkItemExists)
-  .get(requireAuth, (req, res, next) => {
+  .get((req, res, next) => {
       res.json(ItemsService.serializeItem(res.item))
   })
-  .delete(requireAuth, jsonBodyParser, (req, res, next) => {
+  .delete(jsonBodyParser, (req, res, next) => {
     ItemsService.deleteItem(
       req.app.get('db'),
       req.params.item_id
@@ -46,7 +47,7 @@ itemsRouter
       })
       .catch(next)
   })
-  .patch(requireAuth, jsonBodyParser, (req, res, next) => {
+  .patch(jsonBodyParser, (req, res, next) => {
     const { item_name, list_id } = req.body;
     const ItemToUpdate = { item_name, list_id };
 
@@ -77,6 +78,11 @@ async function checkItemExists(req, res, next) {
         error: `Item doesn't exist`
       })
 
+    if (item.user_id !== req.user.id) {
+      return res.status(404).json({
+        error: `No permit`
+      });
+    }
     res.item = item
     next();
   } catch (error) {
