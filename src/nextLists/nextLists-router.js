@@ -16,8 +16,8 @@ nextlistsRouter
       .catch(next)
   })
   .post(requireAuth, jsonBodyParser, (req, res, next) => {
-    const { list_name, type } = req.body;
-    const newNextList = { list_name, type };
+    const { list_name } = req.body;
+    const newNextList = { list_name };
     console.log(newNextList)
     for (const [key, value] of Object.entries(newNextList))
       if (value == null)
@@ -25,7 +25,7 @@ nextlistsRouter
           error: `Missing '${key}' in request body`
         });
     newNextList.user_id = req.user.id;
-  
+    newNextList.type = "Next";
     NextListsService.insertNextList(
     req.app.get('db'),
     newNextList
@@ -42,19 +42,8 @@ nextlistsRouter
 nextlistsRouter.route('/:list_id/')
   .all(requireAuth)
   .all(checkListExists)
-  .get((req, res, next) => {
-    NextListsService.getListItems(
-      req.app.get('db'),
-      req.params.list_id
-    )
-      .then(listItems => {
-        res.json({
-          'listItems': listItems.map(NextListsService.serializeNextListItems),
-          'listName': res.list.list_name
-        })
-      })
-      .catch(next)
-    
+  .get((req, res) => {
+    res.json(NextListsService.serializeNextLists(res.list))
   })
   .delete(jsonBodyParser, (req, res, next) => {
     console.log('ok')
@@ -85,6 +74,23 @@ nextlistsRouter.route('/:list_id/')
     )
       .then(numRowsAffected => {
         res.status(204).end()
+      })
+      .catch(next)
+  })
+
+nextlistsRouter.route('/:list_id/items')
+  .all(requireAuth)
+  .all(checkListExists)
+  .get((req, res, next) => {
+    NextListsService.getListItems(
+      req.app.get('db'),
+      req.params.list_id
+    )
+      .then(listItems => {
+        res.json({
+          'listItems': listItems.map(NextListsService.serializeNextListItems),
+          'listName': res.list.list_name
+        })
       })
       .catch(next)
   })

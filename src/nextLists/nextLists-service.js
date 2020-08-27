@@ -19,7 +19,8 @@ const NextListsService = {
       .from('dontforget_lists AS dl')
       .select(
         'item.id',
-        'item.item_name AS item_name'
+        'item.item_name AS item_name',
+        'item.date_created'
       )
       .join(
         'dontforget_items AS item',
@@ -50,6 +51,7 @@ const NextListsService = {
       return {
           id: nextList.id,
           list_name: xss(nextList.list_name),
+          date_created: new Date(nextList.date_created),
       };
   },
   serializeNextListItems(listItem) {
@@ -57,6 +59,7 @@ const NextListsService = {
     return {
         id: listItem.id,
         item_name: xss(listItem.item_name),
+        date_created: new Date(listItem.date_created),
     };
 },
 };

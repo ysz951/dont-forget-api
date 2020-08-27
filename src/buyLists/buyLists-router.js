@@ -16,16 +16,15 @@ buylistsRouter
       .catch(next)
   })
   .post(requireAuth, jsonBodyParser, (req, res, next) => {
-    const { list_name, type } = req.body;
-    const newBuyList = { list_name, type };
-    console.log(newBuyList)
+    const { list_name } = req.body;
+    const newBuyList = { list_name };
     for (const [key, value] of Object.entries(newBuyList))
       if (value == null)
         return res.status(400).json({
           error: `Missing '${key}' in request body`
         });
     newBuyList.user_id = req.user.id;
-  
+    newBuyList.type = 'Now';
     BuyListsService.insertBuyList(
     req.app.get('db'),
     newBuyList
@@ -42,19 +41,8 @@ buylistsRouter
 buylistsRouter.route('/:list_id')
   .all(requireAuth)
   .all(BuyListsService.checkListExists)
-  .get((req, res, next) => {
-    BuyListsService.getListItems(
-      req.app.get('db'),
-      req.params.list_id
-    )
-      .then(listItems => {
-        res.json({
-          'listItems': listItems.map(BuyListsService.serializeBuyListItems),
-          'listName': res.list.list_name
-        })
-      })
-      .catch(next)
-    
+  .get((req, res) => {
+    res.json(BuyListsService.serializeBuyLists(res.list))
   })
   .delete(jsonBodyParser, (req, res, next) => {
     console.log('ok')
@@ -88,27 +76,24 @@ buylistsRouter.route('/:list_id')
       })
       .catch(next)
   })
-/* async/await syntax for promises */
-async function checkListExists(req, res, next) {
-  try {
-    const list = await BuyListsService.getBuyListById(
-        req.app.get('db'),
-        req.params.list_id
-    );
-    if (!list)
-      return res.status(404).json({
-        error: `list doesn't exist`
-      });
-    if (list.user_id !== req.user.id) {
-      return res.status(404).json({
-        error: `No permit`
-      });
-    }
-    res.list = list
-    next();
-  } catch (error) {
-    next(error);
-  }
-}
+
+
+buylistsRouter.route('/:list_id/items')
+.all(requireAuth)
+.all(BuyListsService.checkListExists)
+.get((req, res, next) => {
+  BuyListsService.getListItems(
+    req.app.get('db'),
+    req.params.list_id
+  )
+    .then(listItems => {
+      res.json({
+        'listItems': listItems.map(BuyListsService.serializeBuyListItems),
+        'listName': res.list.list_name
+      })
+    })
+    .catch(next)
+  
+})
 
 module.exports = buylistsRouter;

@@ -110,6 +110,7 @@ function serializeBuyLists(buyList) {
   return {
       id: buyList.id,
       list_name: buyList.list_name,
+      date_created: buyList.date_created.toISOString()
   };
 }
 
@@ -117,6 +118,7 @@ function serializeBuyListItems(listItem) {
   return {
       id: listItem.id,
       item_name: listItem.item_name,
+      date_created: listItem.date_created.toISOString()
   };
 }
 
@@ -252,6 +254,8 @@ module.exports = {
   makeExpectedBuyLists,
   makeExpectedNextLists,
   makeExpectedListItems,
+  serializeBuyLists,
+  serializeBuyListItems,
   makeListsFixtures,
   seedUsers,
   seedLists,

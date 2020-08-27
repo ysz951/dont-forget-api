@@ -19,7 +19,8 @@ const BuyListsService = {
         .from('dontforget_lists AS dl')
         .select(
           'item.id',
-          'item.item_name AS item_name'
+          'item.item_name AS item_name',
+          'item.date_created'
         )
         .join(
           'dontforget_items AS item',
@@ -52,6 +53,7 @@ const BuyListsService = {
       return {
           id: buyList.id,
           list_name: xss(buyList.list_name),
+          date_created: new Date(buyList.date_created),
       };
   },
   serializeBuyListItems(listItem) {
@@ -59,6 +61,7 @@ const BuyListsService = {
     return {
         id: listItem.id,
         item_name: xss(listItem.item_name),
+        date_created: new Date(listItem.date_created),
     };
   },
   async checkListExists(req, res, next) {
