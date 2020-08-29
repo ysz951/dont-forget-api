@@ -1,8 +1,11 @@
 # Dont Forget
-...
+A personal shopping memo app. Dont forget what you want!
 
 ## Features
-...
+* Automatically add all unchecked items to Next Time List.
+* Authorization is required for all operations to protect user's data.
+* Automatically delete the list with all items checked.
+* Easy to understand and use.
 
 ## Demo
 ...
