@@ -1,36 +1,26 @@
-# Enjoy Cook
-An online recipes search & share app. Find you want, make you like!
-
-This is the back end for `Enjoy Cook`. The front end can be found at https://github.com/ysz951/enjoy-cook-app.
+# Dont Forget
+A personal shopping memo app. Dont forget what you want!
 
 ## Features
-* Search recipes by category or keyword.
-* Easy to log in and register.
-* Add the recipes you like to your favorites link.
-* Display the number of comments of the recipe in real time.
-* Post, edit or delete your comments about the recipe.
+* Automatically add all unchecked items to Next Time List.
+* Authorization is required for all operations to protect user's data.
+* Automatically delete the list with all items checked.
+* Easy to understand and use.
 
 ## Demo
-* [Live Demo](https://enjoy-cook-app.vercel.app/)
+...
 
 ## Screenshoots
-### Home page: 
-![image](https://github.com/ysz951/enjoy-cook-app/blob/master/demo_images/mobile_home.png)
-
-### Main Page:
-![image](https://github.com/ysz951/enjoy-cook-app/blob/master/demo_images/mobile_search.png)
-
-### Recipe Page:
-![image](https://github.com/ysz951/enjoy-cook-app/blob/master/demo_images/mobile_recipe.png)
+...
 
 ## Setting Up
 
 - Install dependencies: `npm install`
-- Create development and test databases: `createdb enjoycook`, `createdb enjoycook-test`
-- Create database user: `createuser enjoycook_server`
+- Create development and test databases: `createdb dontforget`, `createdb dontforget-test`
+- Create database user: `createuser dontforget_server`
 - Grant privileges to new user in `psql`:
-  - `GRANT ALL PRIVILEGES ON DATABASE "enjoycook" TO enjoycook_server`
-  - `GRANT ALL PRIVILEGES ON DATABASE "enjoycook-test" TO enjoycook_server`
+  - `GRANT ALL PRIVILEGES ON DATABASE "dontforget" TO dontforget_server`
+  - `GRANT ALL PRIVILEGES ON DATABASE "dontforget-test" TO dontforget_server`
 - Prepare environment file: `cp example.env .env`
 - Replace values in `.env` with your custom values.
 - Bootstrap development database: `npm run migrate`
@@ -40,8 +30,8 @@ This is the back end for `Enjoy Cook`. The front end can be found at https://git
 ```
 NODE_ENV=development
 PORT=8000
-DATABASE_URL="postgresql://enjoycook_server@localhost/enjoycook"
-TEST_DATABASE_URL="postgresql://enjoycook_server@localhost/enjoycook-test"
+DATABASE_URL="postgresql://dontforget_server@localhost/dontforget"
+TEST_DATABASE_URL="postgresql://dontforget_server@localhost/dontforget-test"
 JWT_SECRET="change-this-secrect"
 JWT_EXPIRY="3h".
 ```
@@ -65,8 +55,8 @@ timezone = 'UTC'
 
 ## Sample Data
 
-- To seed the database for development: `psql -U enjoycook_server -d enjoycook -a -f seeds/seed.enjoycook_tables.sql`
-- To clear seed data: `psql -U enjoycook_server -d enjoycook -a -f seeds/trunc.enjoycook_tables.sql`
+- To seed the database for development: `psql -U dontforget_server -d dontforget -a -f seeds/seed.dontforget_tables.sql`
+- To clear seed data: `psql -U dontforget_server -d dontforget -a -f seeds/trunc.dontforget_tables.sql`
 
 ## Scripts
 
@@ -118,7 +108,7 @@ Authorization: Bearer ${token}
 }
 ```
 
-### Get `/api/users/collections`
+### Get `/api/buylists`
 
 ```js
 // req.user
@@ -127,13 +117,41 @@ Authorization: Bearer ${token}
 }
 
 // res.body
+[
+ {
+  id: ID,
+  list_name: String,
+  type: String,
+  user_id: ID,
+  date_created: Date
+ }
+]
+```
+
+### Post `/api/buylists`
+
+```js
+// req.user
 {
-  rec_id: ID,
-  collector_id: ID
+  id: ID,
+}
+
+// req.body
+{
+  list_name: String
+}
+
+// res.body
+{
+  id: ID,
+  list_name: String,
+  type: String,
+  user_id: ID,
+  date_created: Date
 }
 ```
 
-### Post `/api/users/collections`
+### Get `/api/buylists/:list_id`
 
 ```js
 // req.user
@@ -141,19 +159,65 @@ Authorization: Bearer ${token}
   id: ID
 }
 
-// req.body
+// req.params
 {
-  rec_id: ID,
+  list_id: ID,
 }
 
 // res.body
 {
-  rec_id: ID,
-  collector_id: ID
+  id: ID,
+  list_name: String,
+  type: String,
+  user_id: ID,
+  date_created: Date
 }
 ```
 
-### Delete `/api/users/collections/:rec_id`
+### Delete `/api/buylists/:list_id`
+
+```js
+// req.user
+{
+  id: ID,
+}
+
+// req.params
+{
+  list_id: ID,
+}
+
+// res.body
+{
+  status: 204
+}
+```
+
+### Patch `/api/buylists/:list_id`
+
+```js
+// req.user
+{
+  id: ID,
+}
+
+// req.params
+{
+  list_id: ID,
+}
+
+// req.body
+{
+  list_name: String
+}
+
+// res.body
+{
+  status: 204
+}
+```
+
+### Get `/api/buylists/:list_id/items`
 
 ```js
 // req.user
@@ -163,201 +227,88 @@ Authorization: Bearer ${token}
 
 // req.params
 {
-  rec_id: ID,
-}
-
-// res.body
-{
-  status: 204
-}
-```
-
-### Get `/api/search/:query`
-
-```js
-// req.params
-{
-  query: String,
+  list_id: ID,
 }
 
 // res.body
 [
- {
-  id: ID,
-  name: String,
-  content: String,
-  img_src: String,
-  category: String,
-  date_created: Date,
-  number_of_comments: Number,
-  author: {
-            id: ID,
-            user_name: String,
-            date_created: Date,
-            date_modified: Date
+  {
+    id: ID,
+    item_name: String,
+    list_id: ID,
+    user_id: ID,
+    date_created: Date
   }
- }
 ]
 ```
 
-### Get `/api/categories`
-
-```js
-// res.body
-[
- {
-  id: ID,
-  name: String
- }
-]
-```
-
-### Get `/api/categories/:category_id`
-
-```js
-// req.params
-{
-  category_id: ID,
-}
-
-// res.body
-[
- {
-  id: ID,
-  name: String,
-  content: String,
-  img_src: String,
-  category: String,
-  date_created: Date,
-  number_of_comments: Number,
-  author: {
-            id: ID,
-            user_name: String,
-            date_created: Date,
-            date_modified: Date
-  }
- }
-]
-```
-
-### Get `/api/recipes`
-
-```js
-// res.body
-[
- {
-  id: ID,
-  name: String,
-  content: String,
-  img_src: String,
-  category: String,
-  date_created: Date,
-  number_of_comments: Number,
-  author: {
-            id: ID,
-            user_name: String,
-            date_created: Date,
-            date_modified: Date
-  }
- }
-]
-```
-
-### Get `/api/recipes/:recipe_id`
-
-```js
-// req.params
-{
-  recipe_id: ID,
-}
-
-// res.body
-{
-  id: ID,
-  name: String,
-  content: String,
-  img_src: String,
-  category: String,
-  date_created: Date,
-  number_of_comments: Number,
-  author: {
-            id: ID,
-            user_name: String,
-            date_created: Date,
-            date_modified: Date
-  }
-}
-```
-
-### Get `/api/recipes/:recipe_id/comments`
-
-```js
-// req.params
-{
-  recipe_id: ID,
-}
-
-// res.body
-[
- {
-   id: ID,
-   recipe_id: String,
-   content: String,
-   date_created: Date,
-   author: {
-             id: ID,
-             user_name: String,
-             date_created: Date,
-             date_modified: Date
-   }
- }
-]
-```
-
-### Post `/api/comments`
+### Get `/api/nextlists`
 
 ```js
 // req.user
 {
-  id: Id,
+  id: ID
+}
+
+// res.body
+[
+ {
+  id: ID,
+  list_name: String,
+  type: String,
+  user_id: ID,
+  date_created: Date
+ }
+]
+```
+
+### Post `/api/nextlists`
+
+```js
+// req.user
+{
+  id: ID,
 }
 
 // req.body
 {
-  recipe_id: ID,
-  content: String,
+  list_name: String
 }
 
 // res.body
 {
   id: ID,
-  recipe_id: String,
-  content: String,
-  date_created: Date,
-  author: {
-            id: ID,
-            user_name: String,
-            date_created: Date,
-            date_modified: Date
-  }
+  list_name: String,
+  type: String,
+  user_id: ID,
+  date_created: Date
 }
 ```
 
-### Delete `/api/comments/:comment_id`
+### Get `/api/nextlists/:list_id`
 
 ```js
+// req.user
+{
+  id: ID
+}
+
 // req.params
 {
-  comment_id: ID,
+  list_id: ID,
 }
 
 // res.body
 {
-  status: 204
+  id: ID,
+  list_name: String,
+  type: String,
+  user_id: ID,
+  date_created: Date
 }
 ```
 
-### Patch `/api/comments/:comment_id`
+### Delete `/api/nextlists/:list_id`
 
 ```js
 // req.user
@@ -367,13 +318,7 @@ Authorization: Bearer ${token}
 
 // req.params
 {
-  comment_id: ID,
-}
-
-// req.body
-{
-  recipe_id: ID,
-  content: String
+  list_id: ID,
 }
 
 // res.body
@@ -381,6 +326,146 @@ Authorization: Bearer ${token}
   status: 204
 }
 ```
+
+### Patch `/api/nextlists/:list_id`
+
+```js
+// req.user
+{
+  id: ID,
+}
+
+// req.params
+{
+  list_id: ID,
+}
+
+// req.body
+{
+  list_name: String
+}
+
+// res.body
+{
+  status: 204
+}
+```
+
+### Get `/api/nextlists/:list_id/items`
+
+```js
+// req.user
+{
+  id: ID
+}
+
+// req.params
+{
+  list_id: ID,
+}
+
+// res.body
+[
+  {
+    id: ID,
+    item_name: String,
+    list_id: ID,
+    user_id: ID,
+    date_created: Date
+  }
+]
+```
+
+### Post `/api/items`
+
+```js
+// req.user
+{
+  id: ID,
+}
+
+// req.body
+{
+  item_name: String,
+  list_id: ID
+}
+
+// res.body
+{
+  id: ID,
+  item_name: String,
+  list_id: ID,
+  user_id: ID,
+  date_created: Date
+}
+```
+
+### Get `/api/items/:item_id`
+
+```js
+// req.user
+{
+  id: ID
+}
+
+// req.params
+{
+  item_id: ID,
+}
+
+// res.body
+{
+  id: ID,
+  item_name: String,
+  list_id: ID,
+  user_id: ID,
+  date_created: Date
+}
+```
+
+### Delete `/api/items/:item_id`
+
+```js
+// req.user
+{
+  id: ID,
+}
+
+// req.params
+{
+  item_id: ID,
+}
+
+// res.body
+{
+  status: 204
+}
+```
+
+### Patch `/api/items/:item_id`
+
+```js
+// req.user
+{
+  id: ID,
+}
+
+// req.params
+{
+  item_id: ID,
+}
+
+// req.body
+{
+  item_name: String
+}
+
+// res.body
+{
+  status: 204
+}
+```
+
 ## Built With
 ### Front-End
 * #### HTML
