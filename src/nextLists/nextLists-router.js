@@ -18,7 +18,7 @@ nextlistsRouter
   .post(requireAuth, jsonBodyParser, (req, res, next) => {
     const { list_name } = req.body;
     const newNextList = { list_name };
-    console.log(newNextList)
+    // console.log(newNextList)
     for (const [key, value] of Object.entries(newNextList))
       if (value == null)
         return res.status(400).json({
