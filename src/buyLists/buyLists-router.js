@@ -8,7 +8,6 @@ const jsonBodyParser = express.json();
 buylistsRouter
   .route('/')
   .get(requireAuth, (req, res, next) => {
-    // console.log('ok')
     BuyListsService.getAllBuyLists(req.app.get('db'), req.user.id)
       .then(buylists => {
         res.json(buylists.map(BuyListsService.serializeBuyLists))
@@ -45,7 +44,6 @@ buylistsRouter.route('/:list_id')
     res.json(BuyListsService.serializeBuyLists(res.list))
   })
   .delete(jsonBodyParser, (req, res, next) => {
-    console.log('ok')
     BuyListsService.deleteBuyList(
       req.app.get('db'),
       req.params.list_id

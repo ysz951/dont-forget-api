@@ -31,7 +31,6 @@ const BuyListsService = {
         .orderBy('id', 'asc')
   },
   insertBuyList(db, newBuyList) {
-    // console.log(newBuyList)
     return db
       .insert(newBuyList)
       .into('dontforget_lists')

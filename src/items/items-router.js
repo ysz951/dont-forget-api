@@ -5,7 +5,7 @@ const { requireAuth } = require('../middleware/jwt-auth');
 
 const itemsRouter = express.Router();
 const jsonBodyParser = express.json();
-// requireAuth, 
+
 itemsRouter
   .route('/')
   .post(requireAuth, jsonBodyParser, (req, res, next) => {
