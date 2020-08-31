@@ -8,7 +8,7 @@ A personal shopping memo app. Dont forget what you want!
 * Easy to understand and use.
 
 ## Demo
-...
+* [Live Demo](https://dont-forget-app.vercel.app/)
 
 ## Screenshoots
 ...
