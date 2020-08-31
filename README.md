@@ -1,7 +1,7 @@
 # Dont Forget
 A personal shopping memo app. Dont forget what you want!
 
-This is the back end for `Dont Forget`. The back end can be found at https://github.com/ysz951/dont-forget-app.
+This is the back end for `Dont Forget`. The front end can be found at https://github.com/ysz951/dont-forget-app.
 
 ## Features
 * Automatically add all unchecked items to Next Time List.
