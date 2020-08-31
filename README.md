@@ -11,7 +11,17 @@ A personal shopping memo app. Dont forget what you want!
 * [Live Demo](https://dont-forget-app.vercel.app/)
 
 ## Screenshoots
-...
+### Home page: 
+![image](https://github.com/ysz951/dont-forget-app/blob/master/demo_images/mobile_home.png)
+
+### List Page:
+![image](https://github.com/ysz951/dont-forget-app/blob/master/demo_images/mobile_list.png)
+
+### Item Page:
+![image](https://github.com/ysz951/dont-forget-app/blob/master/demo_images/mobile_item.png)
+
+### Shopping Page:
+![image](https://github.com/ysz951/dont-forget-app/blob/master/demo_images/mobile_shopping.png)
 
 ## Setting Up
 
